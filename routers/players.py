@@ -73,11 +73,26 @@ async def create_user(request: Request, user: CreateUserModel = Body(...)):
 
 
 
-@router.post("/hook", response_description="Add new webhook")
-async def createwebhook(data: Dict = Body(...)):
+@router.post("/hook", response_description="Add new webhook", response_model=UserModel)
+async def createwebhook(request:Request, data: Dict = Body(...)):
 
-    print(data)
-    return data
+    new_username = data['data']['username']
+    new_user_id = data['data']['id']
+
+    if (existing_user := await request.app.mongodb["users"].find_one({"user_id": new_user_id})) is not None:
+        print("Existing user found:", existing_user)
+        return existing_user
+
+    new_user = CreateUserModel(username=new_username, user_id=new_user_id)
+    new_user = jsonable_encoder(new_user)
+
+    new_user = await request.app.mongodb["users"].insert_one(new_user)
+    created_user = await request.app.mongodb["users"].find_one(
+        {"_id": new_user.inserted_id}
+        )
+
+    return created_user
+
 
 """Get user score"""
 

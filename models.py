@@ -60,7 +60,7 @@ class PlayerModel(BaseModel):
 class UserModel(BaseModel):
 
     id: PydanticObjectId = Field(alias='_id')
-    name: str = Field(...)
+    username: str = Field(...)
     user_id: str = Field(...)
     score: int = 0
     played: int = 0
@@ -74,24 +74,25 @@ class UserModel(BaseModel):
 
 class CreateUserModel(BaseModel):
 
-    name: str = Field(...)
+    username: str = Field(...)
     user_id: str = Field(...)
     score: Optional[int] = 0
     played: Optional[int] = 0
 
     class Config:
 
-        allow_population_by_field_name = True
+        populate_by_name = True
         arbitrary_types_allowed = True
 
 
-
 class UpdateUserModel(BaseModel):
-
     
+    user_id: str = Field(...)
     score: Optional[int]
     played: Optional[float]
 
     class Config:
+
+        arbitrary_types_allowed = True        
+        populate_by_name = True
         arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
