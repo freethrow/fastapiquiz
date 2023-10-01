@@ -1,7 +1,6 @@
+from typing import Annotated, Any, Callable, Optional
 
-from typing import Optional, Any, Callable, Annotated
 from bson import ObjectId
-
 from pydantic import BaseModel, ConfigDict, Field, GetJsonSchemaHandler
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
@@ -28,14 +27,11 @@ class _ObjectIdPydanticAnnotation:
             serialization=core_schema.to_string_ser_schema(),
         )
 
-PydanticObjectId = Annotated[
-    ObjectId, _ObjectIdPydanticAnnotation
-]
 
+PydanticObjectId = Annotated[ObjectId, _ObjectIdPydanticAnnotation]
 
 
 class PlayerModel(BaseModel):
-  
     PLAYER_NAME: str = Field(...)
     TEAM_ABBREVIATION: str = Field(...)
     PLAYER_ID: int = Field(...)
@@ -58,41 +54,40 @@ class PlayerModel(BaseModel):
 
 
 class UserModel(BaseModel):
-
-    id: PydanticObjectId = Field(alias='_id')
+    id: PydanticObjectId = Field(alias="_id")
     username: str = Field(...)
     user_id: str = Field(...)
     score: int = 0
     played: int = 0
 
     class Config:
-
-        allow_population_by_field_name = True
+        populate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
 
 class CreateUserModel(BaseModel):
-
     username: str = Field(...)
     user_id: str = Field(...)
     score: Optional[int] = 0
     played: Optional[int] = 0
 
     class Config:
-
         populate_by_name = True
         arbitrary_types_allowed = True
 
 
+class UpdateGameScore(BaseModel):
+    user_id: str = Field(...)
+    addscore: int
+
+
 class UpdateUserModel(BaseModel):
-    
     user_id: str = Field(...)
     score: Optional[int]
     played: Optional[float]
 
     class Config:
-
-        arbitrary_types_allowed = True        
+        arbitrary_types_allowed = True
         populate_by_name = True
         arbitrary_types_allowed = True
