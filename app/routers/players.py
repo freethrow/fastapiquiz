@@ -6,8 +6,13 @@ from fastapi import APIRouter, Body, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from models import (CreateUserModel, PlayerModel, UpdateGameScore,
-                    UpdateUserModel, UserModel)
+from ..models import (
+    CreateUserModel,
+    PlayerModel,
+    UpdateGameScore,
+    UpdateUserModel,
+    UserModel,
+)
 
 router = APIRouter()
 
